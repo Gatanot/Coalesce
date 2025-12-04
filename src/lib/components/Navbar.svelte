@@ -17,7 +17,7 @@
     <div class="navbar-container">
         <a href="/" class="navbar-brand" onclick={closeMobileMenu}>
             <span class="navbar-brand-icon">P</span>
-            Prompt Manager
+            <span class="navbar-brand-text">Prompt Manager</span>
         </a>
 
         <button
@@ -34,20 +34,18 @@
 
         <div class="navbar-nav" class:open={mobileMenuOpen}>
             <a
-            href="/"
+                href="/"
                 class="nav-link"
                 class:active={$page.url.pathname === "/"}
                 onclick={closeMobileMenu}
-                
             >
                 提示词
             </a>
             <a
-            href="/settings"
+                href="/settings"
                 class="nav-link"
                 class:active={$page.url.pathname === "/settings"}
                 onclick={closeMobileMenu}
-                
             >
                 设置
             </a>
@@ -55,3 +53,15 @@
         </div>
     </div>
 </nav>
+
+<style>
+    .navbar-brand-text {
+        display: block;
+    }
+
+    @media (max-width: 480px) {
+        .navbar-brand-text {
+            display: none;
+        }
+    }
+</style>

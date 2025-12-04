@@ -25,7 +25,10 @@
     }
 </script>
 
-<a href={`/prompts/${prompt.id}/view`} class="card card-hover prompt-card">
+<a
+    href={`/prompts/${prompt.id}/view`}
+    class="prompt-card card card-elevated card-hover"
+>
     <div class="card-header">
         <h3 class="card-title truncate">{prompt.title}</h3>
         <button
@@ -57,6 +60,11 @@
         flex-direction: column;
         text-decoration: none;
         color: inherit;
+        min-height: 140px;
+    }
+
+    .prompt-card:hover {
+        text-decoration: none;
     }
 
     .prompt-card:hover .delete-btn {
@@ -65,11 +73,12 @@
 
     .delete-btn {
         opacity: 0;
-        transition: opacity var(--transition-fast);
+        transition: opacity var(--md-motion-duration-short3);
+        flex-shrink: 0;
     }
 
     .delete-icon {
-        font-size: var(--text-xl);
+        font-size: 22px;
         font-weight: 300;
         line-height: 1;
     }
@@ -80,10 +89,15 @@
         -webkit-box-orient: vertical;
         overflow: hidden;
         flex: 1;
+        margin-bottom: 0;
     }
 
     .card-meta {
-        font-size: var(--text-xs);
-        color: var(--color-text-muted);
+        font-size: var(--md-label-small);
+        color: var(--md-on-surface-variant);
+    }
+
+    .card-footer {
+        margin-top: auto;
     }
 </style>

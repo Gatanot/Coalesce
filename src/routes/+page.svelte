@@ -11,7 +11,6 @@
         loading = true;
         error = null;
         try {
-            // Load prompts based on view mode
             const groupBy = viewMode === "clusters" ? "cluster" : "tag";
             const promptsRes = await fetch(`/api/prompts?groupBy=${groupBy}`);
             const promptsData = await promptsRes.json();
@@ -32,33 +31,34 @@
             const res = await fetch(`/api/prompts/${id}`, { method: "DELETE" });
             const data = await res.json();
             if (data.success) {
-                // Reload data
                 await loadData();
             } else {
-                showToast('删除失败: ' + (data.error || '未知错误'), 'error');
+                showToast("删除失败: " + (data.error || "未知错误"), "error");
             }
         } catch (e) {
-            showToast('删除失败', 'error');
+            showToast("删除失败", "error");
             console.error(e);
         }
     }
 
-    function showToast(message: string, kind: 'success' | 'error' = 'success') {
-        let container = document.querySelector('.toast-container') as HTMLElement | null;
+    function showToast(message: string, kind: "success" | "error" = "success") {
+        let container = document.querySelector(
+            ".toast-container",
+        ) as HTMLElement | null;
         if (!container) {
-            container = document.createElement('div');
-            container.className = 'toast-container';
+            container = document.createElement("div");
+            container.className = "toast-container";
             document.body.appendChild(container);
         }
 
-        const t = document.createElement('div');
-        t.className = `toast ${kind === 'success' ? 'toast-success' : 'toast-error'}`;
+        const t = document.createElement("div");
+        t.className = `toast ${kind === "success" ? "toast-success" : "toast-error"}`;
         t.textContent = message;
         container.appendChild(t);
 
         setTimeout(() => {
-            t.classList.add('hide');
-            t.addEventListener('transitionend', () => t.remove());
+            t.classList.add("hide");
+            t.addEventListener("transitionend", () => t.remove());
         }, 2200);
     }
 
@@ -67,15 +67,12 @@
         loadData();
     }
 
-    // Initial load
     $effect(() => {
         loadData();
     });
 
-    // Get sorted group keys
     function getSortedGroups(): string[] {
         const keys = Object.keys(groupedPrompts);
-        // Put "未分类" or "未标记" at the end
         return keys.sort((a, b) => {
             if (a === "未分类" || a === "未标记") return 1;
             if (b === "未分类" || b === "未标记") return -1;
@@ -113,13 +110,15 @@
     </div>
 
     {#if loading}
-        <div class="loading">
+        <div class="loading-state">
+            <div class="loading-spinner"></div>
             <p>加载中...</p>
         </div>
     {:else if error}
         <div class="error-state">
+            <div class="error-icon">!</div>
             <p>{error}</p>
-            <button class="btn btn-secondary" onclick={loadData}>重试</button>
+            <button class="btn btn-tonal" onclick={loadData}>重试</button>
         </div>
     {:else}
         {#each getSortedGroups() as groupKey (groupKey)}
@@ -127,7 +126,7 @@
                 <div class="group-header">
                     <h2 class="group-title">{groupKey}</h2>
                     <span class="group-count"
-                        >{groupedPrompts[groupKey].length} 个</span
+                        >{groupedPrompts[groupKey].length}</span
                     >
                 </div>
                 <PromptList
@@ -137,11 +136,14 @@
             </div>
         {:else}
             <div class="empty-state">
-                <div class="empty-state-icon"></div>
+                <div class="empty-state-icon">
+                    <span>+</span>
+                </div>
                 <h3 class="empty-state-title">暂无提示词</h3>
                 <p class="empty-state-message">
                     点击右上角的"新建"按钮创建你的第一个提示词
                 </p>
+                <a href="/prompts/new" class="btn btn-primary">创建提示词</a>
             </div>
         {/each}
     {/if}
@@ -149,20 +151,45 @@
 
 <style>
     .controls {
-        margin-bottom: var(--space-6);
+        margin-bottom: var(--md-space-8);
     }
 
-    .loading,
+    .loading-state,
     .error-state {
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        padding: var(--space-16);
-        color: var(--color-text-muted);
+        padding: var(--md-space-16);
+        color: var(--md-on-surface-variant);
+        gap: var(--md-space-4);
     }
 
-    .error-state {
-        gap: var(--space-4);
+    .loading-spinner {
+        width: 48px;
+        height: 48px;
+        border: 3px solid var(--md-outline-variant);
+        border-top-color: var(--md-primary);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    .error-icon {
+        width: 56px;
+        height: 56px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--md-error-container);
+        color: var(--md-on-error-container);
+        border-radius: var(--md-shape-full);
+        font-size: 24px;
+        font-weight: 500;
     }
 </style>

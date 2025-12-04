@@ -122,7 +122,10 @@
     </div>
 
     {#if error}
-        <div class="error-message">{error}</div>
+        <div class="error-banner">
+            <span class="error-icon">!</span>
+            <span>{error}</span>
+        </div>
     {/if}
 
     <div class="editor-form">
@@ -167,12 +170,28 @@
         max-width: 800px;
     }
 
-    .error-message {
-        padding: var(--space-3) var(--space-4);
-        background: rgba(239, 68, 68, 0.1);
-        border: 1px solid var(--color-error);
-        border-radius: var(--radius-md);
-        color: var(--color-error);
-        margin-bottom: var(--space-4);
+    .error-banner {
+        display: flex;
+        align-items: center;
+        gap: var(--md-space-3);
+        padding: var(--md-space-4);
+        background: var(--md-error-container);
+        color: var(--md-on-error-container);
+        border-radius: var(--md-shape-sm);
+        margin-bottom: var(--md-space-6);
+    }
+
+    .error-icon {
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--md-error);
+        color: var(--md-on-error);
+        border-radius: var(--md-shape-full);
+        font-weight: 600;
+        font-size: 14px;
+        flex-shrink: 0;
     }
 </style>

@@ -28,21 +28,24 @@
 <div class="tag-selector">
     <label class="label">标签</label>
 
-    <div class="tag-group">
+    <div class="chip-group">
         {#each allTags as tag (tag.id)}
             <button
                 type="button"
-                class="tag tag-selectable"
+                class="chip chip-filter"
                 class:selected={isSelected(tag.id)}
                 onclick={() => onTagToggle(tag.id)}
             >
+                {#if isSelected(tag.id)}
+                    <span class="chip-checkmark">✓</span>
+                {/if}
                 {tag.name}
             </button>
         {/each}
 
         {#if isAdding}
             <form
-                class="tag-form"
+                class="chip-form"
                 onsubmit={(e) => {
                     e.preventDefault();
                     handleSubmit();
@@ -50,7 +53,7 @@
             >
                 <input
                     type="text"
-                    class="tag-input"
+                    class="chip-input"
                     placeholder="标签名称"
                     bind:value={newTagName}
                     autofocus
@@ -70,10 +73,11 @@
         {:else}
             <button
                 type="button"
-                class="tag tag-add"
+                class="chip chip-add"
                 onclick={() => (isAdding = true)}
             >
-                + 新建标签
+                <span class="chip-add-icon">+</span>
+                新建标签
             </button>
         {/if}
     </div>
@@ -81,53 +85,69 @@
 
 <style>
     .tag-selector {
-        margin-bottom: var(--space-4);
+        margin-bottom: var(--md-space-6);
     }
 
-    .tag-selectable {
+    .chip-filter {
         cursor: pointer;
-        transition: all var(--transition-fast);
+        transition: all var(--md-motion-duration-short3)
+            var(--md-motion-easing-standard);
     }
 
-    .tag-selectable:hover {
-        background: rgba(99, 102, 241, 0.25);
+    .chip-filter:hover {
+        background: var(--md-surface-container-highest);
     }
 
-    .tag-selectable.selected {
-        background: var(--color-accent);
-        color: white;
+    .chip-filter.selected {
+        background: var(--md-secondary-container);
+        color: var(--md-on-secondary-container);
+        border-color: transparent;
     }
 
-    .tag-add {
-        background: var(--color-bg-tertiary);
-        color: var(--color-text-muted);
-        border: 1px dashed var(--color-border);
+    .chip-checkmark {
+        font-size: 12px;
+        margin-right: var(--md-space-1);
+    }
+
+    .chip-add {
+        background: transparent;
+        border: 1px dashed var(--md-outline);
+        color: var(--md-on-surface-variant);
         cursor: pointer;
+        gap: var(--md-space-1);
     }
 
-    .tag-add:hover {
-        border-color: var(--color-accent);
-        color: var(--color-accent);
+    .chip-add:hover {
+        border-color: var(--md-primary);
+        color: var(--md-primary);
+        background: rgba(103, 80, 164, 0.08);
     }
 
-    .tag-form {
+    .chip-add-icon {
+        font-size: 16px;
+        font-weight: 300;
+    }
+
+    .chip-form {
         display: flex;
         align-items: center;
-        gap: var(--space-2);
+        gap: var(--md-space-2);
     }
 
-    .tag-input {
-        padding: var(--space-1) var(--space-2);
-        font-size: var(--text-xs);
-        background: var(--color-bg-secondary);
-        border: 1px solid var(--color-border);
-        border-radius: var(--radius-sm);
-        color: var(--color-text-primary);
-        width: 100px;
+    .chip-input {
+        padding: var(--md-space-2) var(--md-space-3);
+        font-size: var(--md-body-small);
+        background: var(--md-surface-container);
+        border: 1px solid var(--md-outline);
+        border-radius: var(--md-shape-xs);
+        color: var(--md-on-surface);
+        width: 120px;
     }
 
-    .tag-input:focus {
+    .chip-input:focus {
         outline: none;
-        border-color: var(--color-accent);
+        border-color: var(--md-primary);
+        border-width: 2px;
+        padding: calc(var(--md-space-2) - 1px) calc(var(--md-space-3) - 1px);
     }
 </style>

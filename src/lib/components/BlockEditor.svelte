@@ -53,17 +53,14 @@
 <div class="block-editor">
     <div class="block-header">
         <label class="label">内容块</label>
-        <button
-            type="button"
-            class="btn btn-sm btn-secondary"
-            onclick={addBlock}
-        >
+        <button type="button" class="btn btn-sm btn-tonal" onclick={addBlock}>
             + 添加块
         </button>
     </div>
 
     {#if blocks.length === 0}
         <div class="block-empty">
+            <div class="block-empty-icon">+</div>
             <p>点击上方按钮添加第一个内容块</p>
         </div>
     {:else}
@@ -78,19 +75,26 @@
                     <div class="drag-handle" title="拖拽排序">⋮⋮</div>
                     <div class="block-content">
                         <div class="block-toolbar">
-                            <select
-                                class="block-type-select"
-                                value={block.type}
-                                onchange={(e) =>
-                                    updateBlockType(
-                                        block.id,
-                                        (e.target as HTMLSelectElement)
-                                            .value as "text" | "code",
-                                    )}
-                            >
-                                <option value="text">文本</option>
-                                <option value="code">代码</option>
-                            </select>
+                            <div class="block-type-chips">
+                                <button
+                                    type="button"
+                                    class="block-type-chip"
+                                    class:active={block.type === "text"}
+                                    onclick={() =>
+                                        updateBlockType(block.id, "text")}
+                                >
+                                    文本
+                                </button>
+                                <button
+                                    type="button"
+                                    class="block-type-chip"
+                                    class:active={block.type === "code"}
+                                    onclick={() =>
+                                        updateBlockType(block.id, "code")}
+                                >
+                                    代码
+                                </button>
+                            </div>
                         </div>
                         <textarea
                             class="textarea block-textarea"
@@ -109,7 +113,7 @@
                     <div class="block-actions">
                         <button
                             type="button"
-                            class="btn btn-ghost btn-icon"
+                            class="btn btn-ghost btn-icon btn-sm"
                             onclick={() => removeBlock(block.id)}
                             title="删除"
                         >
@@ -124,14 +128,14 @@
 
 <style>
     .block-editor {
-        margin-bottom: var(--space-4);
+        margin-bottom: var(--md-space-6);
     }
 
     .block-header {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        margin-bottom: var(--space-3);
+        margin-bottom: var(--md-space-4);
     }
 
     .block-header .label {
@@ -139,31 +143,69 @@
     }
 
     .block-empty {
-        padding: var(--space-8);
+        padding: var(--md-space-12) var(--md-space-8);
         text-align: center;
-        border: 2px dashed var(--color-border);
-        border-radius: var(--radius-lg);
-        color: var(--color-text-muted);
+        border: 2px dashed var(--md-outline-variant);
+        border-radius: var(--md-shape-lg);
+        color: var(--md-on-surface-variant);
+    }
+
+    .block-empty-icon {
+        width: 48px;
+        height: 48px;
+        margin: 0 auto var(--md-space-3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        border: 2px dashed var(--md-outline);
+        border-radius: var(--md-shape-md);
+        color: var(--md-outline);
+    }
+
+    .block-empty p {
+        margin: 0;
+        font-size: var(--md-body-medium);
     }
 
     .block-list {
         display: flex;
         flex-direction: column;
-        gap: var(--space-3);
+        gap: var(--md-space-3);
     }
 
     .block-toolbar {
-        margin-bottom: var(--space-2);
+        margin-bottom: var(--md-space-3);
     }
 
-    .block-type-select {
-        padding: var(--space-1) var(--space-2);
-        font-size: var(--text-xs);
-        background: var(--color-bg-secondary);
-        border: 1px solid var(--color-border);
-        border-radius: var(--radius-sm);
-        color: var(--color-text-primary);
+    .block-type-chips {
+        display: inline-flex;
+        background: var(--md-surface-container);
+        border: 1px solid var(--md-outline-variant);
+        border-radius: var(--md-shape-full);
+        padding: 2px;
+        gap: 2px;
+    }
+
+    .block-type-chip {
+        padding: var(--md-space-1) var(--md-space-3);
+        font-size: var(--md-label-medium);
+        font-weight: 500;
+        background: transparent;
+        border: none;
+        border-radius: var(--md-shape-full);
+        color: var(--md-on-surface-variant);
         cursor: pointer;
+        transition: all var(--md-motion-duration-short3);
+    }
+
+    .block-type-chip:hover {
+        background: rgba(var(--md-on-surface), 0.08);
+    }
+
+    .block-type-chip.active {
+        background: var(--md-secondary-container);
+        color: var(--md-on-secondary-container);
     }
 
     .block-textarea {
@@ -171,16 +213,23 @@
     }
 
     .block-textarea.code-block {
-        font-family: var(--font-mono);
-        font-size: var(--text-sm);
+        font-family: var(--md-font-mono);
+        font-size: var(--md-body-medium);
     }
 
     .drag-handle {
         cursor: grab;
         user-select: none;
-        color: var(--color-text-muted);
-        font-size: var(--text-lg);
-        letter-spacing: -2px;
+        color: var(--md-on-surface-variant);
+        font-size: 18px;
+        letter-spacing: -3px;
+        opacity: 0.5;
+        transition: opacity var(--md-motion-duration-short3);
+        padding: var(--md-space-1);
+    }
+
+    .drag-handle:hover {
+        opacity: 1;
     }
 
     .drag-handle:active {
@@ -188,7 +237,7 @@
     }
 
     .delete-icon {
-        font-size: var(--text-xl);
+        font-size: 20px;
         font-weight: 300;
         line-height: 1;
     }

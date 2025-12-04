@@ -13,7 +13,6 @@
             const data = await res.json();
 
             if (data.success) {
-                // Download JSON file
                 const blob = new Blob([JSON.stringify(data.data, null, 2)], {
                     type: "application/json",
                 });
@@ -91,44 +90,45 @@
 
     {#if message}
         <div
-            class="message"
+            class="snackbar"
             class:success={message.type === "success"}
             class:error={message.type === "error"}
         >
-            {message.text}
+            <span class="snackbar-icon"
+                >{message.type === "success" ? "✓" : "!"}</span
+            >
+            <span class="snackbar-text">{message.text}</span>
         </div>
     {/if}
 
     <div class="settings-section">
         <h2 class="section-title">数据管理</h2>
 
-        <div class="card">
-            <div class="card-header">
-                <div>
-                    <h3 class="card-title">导出数据</h3>
-                    <p class="card-description">
+        <div class="settings-list">
+            <div class="settings-item">
+                <div class="settings-item-content">
+                    <h3 class="settings-item-title">导出数据</h3>
+                    <p class="settings-item-description">
                         将所有提示词、标签导出为 JSON 文件
                     </p>
                 </div>
                 <button
-                    class="btn btn-secondary"
+                    class="btn btn-tonal"
                     onclick={handleExport}
                     disabled={exporting}
                 >
                     {exporting ? "导出中..." : "导出"}
                 </button>
             </div>
-        </div>
 
-        <div class="card">
-            <div class="card-header">
-                <div>
-                    <h3 class="card-title">导入数据</h3>
-                    <p class="card-description">
-                        从 JSON 文件恢复数据（将覆盖现有数据，自动备份）
+            <div class="settings-item">
+                <div class="settings-item-content">
+                    <h3 class="settings-item-title">导入数据</h3>
+                    <p class="settings-item-description">
+                        从 JSON 文件恢复数据（将覆盖现有数据）
                     </p>
                 </div>
-                <label class="btn btn-secondary" class:disabled={importing}>
+                <label class="btn btn-tonal" class:disabled={importing}>
                     {importing ? "导入中..." : "导入"}
                     <input
                         type="file"
@@ -145,16 +145,31 @@
     <div class="settings-section">
         <h2 class="section-title">关于</h2>
 
-        <div class="card">
-            <div class="about-content">
-                <h3>Prompt Manager</h3>
-                <p>轻量级跨平台提示词管理系统</p>
-                <ul class="feature-list">
-                    <li>创建和管理 AI 提示词</li>
-                    <li>使用标签组织提示词</li>
-                    <li>支持 AI 智能聚类分组</li>
-                    <li>数据导入/导出</li>
-                </ul>
+        <div class="about-card card card-filled">
+            <div class="about-header">
+                <div class="about-icon">P</div>
+                <div>
+                    <h3 class="about-title">Prompt Manager</h3>
+                    <p class="about-version">轻量级跨平台提示词管理系统</p>
+                </div>
+            </div>
+            <div class="about-features">
+                <div class="feature-item">
+                    <span class="feature-check">✓</span>
+                    创建和管理 AI 提示词
+                </div>
+                <div class="feature-item">
+                    <span class="feature-check">✓</span>
+                    使用标签组织提示词
+                </div>
+                <div class="feature-item">
+                    <span class="feature-check">✓</span>
+                    支持 AI 智能聚类分组
+                </div>
+                <div class="feature-item">
+                    <span class="feature-check">✓</span>
+                    数据导入/导出
+                </div>
             </div>
         </div>
     </div>
@@ -162,80 +177,170 @@
 
 <style>
     .settings-section {
-        margin-bottom: var(--space-8);
+        margin-bottom: var(--md-space-10);
     }
 
     .section-title {
-        font-size: var(--text-lg);
-        margin-bottom: var(--space-4);
+        font-size: var(--md-title-medium);
+        font-weight: 500;
+        color: var(--md-on-surface-variant);
+        margin-bottom: var(--md-space-4);
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
     }
 
-    .card + .card {
-        margin-top: var(--space-4);
+    .settings-list {
+        background: var(--md-surface-container);
+        border-radius: var(--md-shape-lg);
+        overflow: hidden;
     }
 
-    .card-description {
-        font-size: var(--text-sm);
-        color: var(--color-text-muted);
-        margin-top: var(--space-1);
+    .settings-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: var(--md-space-4) var(--md-space-6);
+        gap: var(--md-space-4);
     }
 
-    .message {
-        padding: var(--space-3) var(--space-4);
-        border-radius: var(--radius-md);
-        margin-bottom: var(--space-4);
+    .settings-item + .settings-item {
+        border-top: 1px solid var(--md-outline-variant);
     }
 
-    .message.success {
-        background: rgba(34, 197, 94, 0.1);
-        border: 1px solid var(--color-success);
-        color: var(--color-success);
+    .settings-item-content {
+        flex: 1;
+        min-width: 0;
     }
 
-    .message.error {
-        background: rgba(239, 68, 68, 0.1);
-        border: 1px solid var(--color-error);
-        color: var(--color-error);
+    .settings-item-title {
+        font-size: var(--md-body-large);
+        font-weight: 500;
+        color: var(--md-on-surface);
+        margin-bottom: var(--md-space-1);
+    }
+
+    .settings-item-description {
+        font-size: var(--md-body-small);
+        color: var(--md-on-surface-variant);
+        margin: 0;
+    }
+
+    .snackbar {
+        display: flex;
+        align-items: center;
+        gap: var(--md-space-3);
+        padding: var(--md-space-4);
+        border-radius: var(--md-shape-sm);
+        margin-bottom: var(--md-space-6);
+        animation: snackbarIn var(--md-motion-duration-medium2)
+            var(--md-motion-easing-decelerate);
+    }
+
+    @keyframes snackbarIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .snackbar.success {
+        background: var(--md-success-container);
+        color: var(--md-on-success-container);
+    }
+
+    .snackbar.error {
+        background: var(--md-error-container);
+        color: var(--md-on-error-container);
+    }
+
+    .snackbar-icon {
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
     }
 
     .disabled {
-        opacity: 0.5;
+        opacity: 0.38;
         cursor: not-allowed;
     }
 
-    .about-content h3 {
-        font-size: var(--text-xl);
-        margin-bottom: var(--space-2);
+    .about-card {
+        padding: var(--md-space-6);
     }
 
-    .about-content p {
-        margin-bottom: var(--space-4);
+    .about-header {
+        display: flex;
+        align-items: center;
+        gap: var(--md-space-4);
+        margin-bottom: var(--md-space-6);
     }
 
-    .feature-list {
-        list-style: none;
+    .about-icon {
+        width: 56px;
+        height: 56px;
+        background: var(--md-primary);
+        color: var(--md-on-primary);
+        border-radius: var(--md-shape-lg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: var(--md-headline-small);
+        font-weight: 600;
+    }
+
+    .about-title {
+        font-size: var(--md-title-large);
+        font-weight: 500;
+        color: var(--md-on-surface);
+        margin-bottom: var(--md-space-1);
+    }
+
+    .about-version {
+        font-size: var(--md-body-medium);
+        color: var(--md-on-surface-variant);
+        margin: 0;
+    }
+
+    .about-features {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
-        gap: var(--space-2);
+        gap: var(--md-space-3);
     }
 
-    .feature-list li {
-        font-size: var(--text-sm);
-        color: var(--color-text-secondary);
-        padding-left: var(--space-4);
-        position: relative;
+    .feature-item {
+        display: flex;
+        align-items: center;
+        gap: var(--md-space-2);
+        font-size: var(--md-body-medium);
+        color: var(--md-on-surface-variant);
     }
 
-    .feature-list li::before {
-        content: "•";
-        position: absolute;
-        left: 0;
-        color: var(--color-accent);
+    .feature-check {
+        color: var(--md-primary);
+        font-weight: 600;
     }
 
     @media (max-width: 640px) {
-        .feature-list {
+        .about-features {
             grid-template-columns: 1fr;
+        }
+
+        .settings-item {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .settings-item button,
+        .settings-item label {
+            width: 100%;
+            justify-content: center;
         }
     }
 </style>

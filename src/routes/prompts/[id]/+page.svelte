@@ -26,14 +26,12 @@
         loading = true;
         error = null;
         try {
-            // Load tags
             const tagsRes = await fetch("/api/tags");
             const tagsData = await tagsRes.json();
             if (tagsData.success) {
                 allTags = tagsData.data;
             }
 
-            // Load prompt
             const promptRes = await fetch(`/api/prompts/${promptId}`);
             const promptData = await promptRes.json();
 
@@ -134,10 +132,10 @@
             if (data.success) {
                 goto("/");
             } else {
-                showToast('删除失败: ' + (data.error || '未知错误'), 'error');
+                showToast("删除失败: " + (data.error || "未知错误"), "error");
             }
         } catch (e) {
-            showToast('删除失败', 'error');
+            showToast("删除失败", "error");
             console.error(e);
         }
     }
@@ -146,30 +144,28 @@
         const content = blocks.map((b) => b.content).join("\n\n");
         navigator.clipboard
             .writeText(content)
-            .then(() => {
-                showToast('已复制到剪贴板');
-            })
-            .catch(() => {
-                showToast('复制失败', 'error');
-            });
+            .then(() => showToast("已复制到剪贴板"))
+            .catch(() => showToast("复制失败", "error"));
     }
 
-    function showToast(message: string, kind: 'success' | 'error' = 'success') {
-        let container = document.querySelector('.toast-container') as HTMLElement | null;
+    function showToast(message: string, kind: "success" | "error" = "success") {
+        let container = document.querySelector(
+            ".toast-container",
+        ) as HTMLElement | null;
         if (!container) {
-            container = document.createElement('div');
-            container.className = 'toast-container';
+            container = document.createElement("div");
+            container.className = "toast-container";
             document.body.appendChild(container);
         }
 
-        const t = document.createElement('div');
-        t.className = `toast ${kind === 'success' ? 'toast-success' : 'toast-error'}`;
+        const t = document.createElement("div");
+        t.className = `toast ${kind === "success" ? "toast-success" : "toast-error"}`;
         t.textContent = message;
         container.appendChild(t);
 
         setTimeout(() => {
-            t.classList.add('hide');
-            t.addEventListener('transitionend', () => t.remove());
+            t.classList.add("hide");
+            t.addEventListener("transitionend", () => t.remove());
         }, 2200);
     }
 
@@ -180,13 +176,15 @@
 
 <div class="container page">
     {#if loading}
-        <div class="loading">
+        <div class="loading-state">
+            <div class="loading-spinner"></div>
             <p>加载中...</p>
         </div>
     {:else if error && !title}
         <div class="error-state">
+            <div class="error-icon">!</div>
             <p>{error}</p>
-            <a href="/" class="btn btn-secondary">返回首页</a>
+            <a href="/" class="btn btn-tonal">返回首页</a>
         </div>
     {:else}
         <div class="page-header">
@@ -216,7 +214,10 @@
         </div>
 
         {#if error}
-            <div class="error-message">{error}</div>
+            <div class="error-banner">
+                <span class="error-icon-sm">!</span>
+                <span>{error}</span>
+            </div>
         {/if}
 
         <div class="editor-form">
@@ -262,23 +263,67 @@
         max-width: 800px;
     }
 
-    .error-message {
-        padding: var(--space-3) var(--space-4);
-        background: rgba(239, 68, 68, 0.1);
-        border: 1px solid var(--color-error);
-        border-radius: var(--radius-md);
-        color: var(--color-error);
-        margin-bottom: var(--space-4);
+    .error-banner {
+        display: flex;
+        align-items: center;
+        gap: var(--md-space-3);
+        padding: var(--md-space-4);
+        background: var(--md-error-container);
+        color: var(--md-on-error-container);
+        border-radius: var(--md-shape-sm);
+        margin-bottom: var(--md-space-6);
     }
 
-    .loading,
+    .error-icon-sm {
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--md-error);
+        color: var(--md-on-error);
+        border-radius: var(--md-shape-full);
+        font-weight: 600;
+        font-size: 14px;
+        flex-shrink: 0;
+    }
+
+    .loading-state,
     .error-state {
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        padding: var(--space-16);
-        color: var(--color-text-muted);
-        gap: var(--space-4);
+        padding: var(--md-space-16);
+        color: var(--md-on-surface-variant);
+        gap: var(--md-space-4);
+    }
+
+    .loading-spinner {
+        width: 48px;
+        height: 48px;
+        border: 3px solid var(--md-outline-variant);
+        border-top-color: var(--md-primary);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    .error-icon {
+        width: 56px;
+        height: 56px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--md-error-container);
+        color: var(--md-on-error-container);
+        border-radius: var(--md-shape-full);
+        font-size: 24px;
+        font-weight: 500;
     }
 </style>
